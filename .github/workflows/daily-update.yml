@@ -1,0 +1,30 @@
+name: DevSync Daily Repository Update
+
+on:
+  schedule:
+    # Runs daily at 02:15 UTC (specific time, no wildcards)
+    - cron: '15 2 * * *'
+  workflow_dispatch:  # Allows manual trigger for testing
+
+jobs:
+  daily-commit:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Git
+        run: |
+          git config user.name "DevSync Automation Bot"
+          git config user.email "23f2003131@ds.study.iitm.ac.in"
+
+      - name: Daily update by 23f2003131@ds.study.iitm.ac.in
+        run: |
+          echo "Last updated on $(date -u)" > daily-status.txt
+          git add daily-status.txt
+          git commit -m "Automated daily update: $(date -u)" || echo "No changes to commit"
+          git push
